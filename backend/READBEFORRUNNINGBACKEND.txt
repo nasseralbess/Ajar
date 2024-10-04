@@ -1,6 +1,9 @@
 Setting up virtual environment, you dont have to do this but I mean why not 
 python3 -m venv env
 
+putting the things you downloaded into requirements.txt 
+pip freeze > requirements.txt 
+
 ACTIVATION 
 source env/bin/activate
 
