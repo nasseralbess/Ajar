@@ -1,8 +1,6 @@
-# Flask-related imports
-from flask import Flask, request, jsonify
-from flask_cors import CORS
-
-# Database-related imports
+# FastAPI-related imports
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from pymongo import MongoClient
 import os
 from dotenv import load_dotenv
@@ -10,18 +8,27 @@ from dotenv import load_dotenv
 # Loading environment variables 
 load_dotenv()
 
-# Flask setup 
-# Initialize the Flask application
-app = Flask(__name__)
+# FastAPI setup
+app = FastAPI()
+
+# Allow CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Adjust as needed
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Setup MongoDB connection
 mongo_uri = os.getenv('MONGODB_URI')
 client = MongoClient(mongo_uri)
-db = client.Ajar  # You can replace 'get_default_database' with your specific database name
+db = client.Ajar  # Replace 'Ajar' with your specific database name if needed
 
-# Storing it into config
-app.config['db'] = db
+# Example route
+@app.get("/")
+async def read_root():
+    return {"message": "Hello, FastAPI!"}
 
-# Start the Flask app
-if __name__ == '__main__':
-    app.run(debug=True)
+# Start the FastAPI app
+# You can run the app with: `uvicorn your_script_name:app --reload`
