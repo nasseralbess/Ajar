@@ -68,9 +68,9 @@ const ListingsMap = memo(({ listingData }: Props) => {
         key={id}
         onPress={onPress}
         coordinate={{
-          longitude:41.3851,
+          longitude:parseFloat(geometry.coordinates[0]),
           //  geometry.coordinates[0],
-          latitude: 2.1734,
+          latitude: parseFloat(geometry.coordinates[1]),
           // geometry.coordinates[1],
         }}
       >
@@ -99,9 +99,9 @@ const ListingsMap = memo(({ listingData }: Props) => {
           <Marker
             key={`${item.id}${item.host_id}`}
             coordinate={{
-              latitude: 41.3851,
+              latitude: parseFloat(item.latitude),
               // item?.latitude,
-              longitude: 2.1734,
+              longitude: parseFloat(item.longitude),
               // item?.longitude,
             }}
             onPress={() => onMarkerSelected(item)}
