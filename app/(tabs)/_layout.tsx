@@ -1,8 +1,8 @@
 import React from "react";
 import { Tabs } from "expo-router";
 import Colors from "@/constants/Colors";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { FontAwesome5 } from "@expo/vector-icons";
+import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
+import { FontAwesome5, FontAwesome6 } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
 
 const Layout = () => {
@@ -38,7 +38,8 @@ const Layout = () => {
         options={{
           tabBarLabel: "Trips",
           tabBarIcon: ({ color, size }) => (
-            <FontAwesome5 name="airbnb" color={color} size={size} />
+            <MaterialIcons name="backpack" size={size} color={color} />
+
           ),
         }}
       />

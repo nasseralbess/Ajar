@@ -28,7 +28,7 @@ const ModalHeaderText = () => {
             textDecorationLine: active === 1 ? "underline" : "none",
           }}
         >
-          Experience
+          Sevices 
         </Text>
       </TouchableOpacity>
     </View>
