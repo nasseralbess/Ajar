@@ -1,6 +1,6 @@
 export default {
-  primary: "#ff5d00",
-  grey: "#5E5D5E",
-  darkGrey: "#878787",
-  dark: "#1A1A1A",
+  primary: "#ff6b35",  // Warm orange
+  grey: "#e0e0e0",     // Light grey
+  darkGrey: "#a8a8a8", // Medium grey
+  dark: "#333333",     // Dark grey/black
 };

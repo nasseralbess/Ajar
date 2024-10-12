@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, Image, TouchableOpacity, FlatList, StyleSheet } from 'react-native';
 import Colors from "@/constants/Colors";
+import { defaultStyles } from "@/constants/Styles";
 
 interface WishlistItem {
   id: string;
@@ -83,7 +84,7 @@ const WishlistCartPage: React.FC = () => {
     return (
       <View style={styles.categoryContainer}>
         <TouchableOpacity onPress={() => toggleCategory(category)} style={styles.categoryHeader}>
-          <Text style={styles.categoryTitle}>{category}</Text>
+          <Text style={defaultStyles.btnText}>{category}</Text>
           <Text style={styles.expandIcon}>{expandedCategory === category ? '▼' : '▶'}</Text>
         </TouchableOpacity>
         {expandedCategory === category && (
