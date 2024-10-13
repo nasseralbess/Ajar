@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   Share,
+  Modal,
 } from "react-native";
 import Animated, {
   interpolate,
@@ -22,11 +23,13 @@ import { AirbnbList } from "@/app/interfaces/airbnb_list";
 import listingData from "@/assets/data/barcelona-listings.json";
 import Colors from "@/constants/Colors";
 import { defaultStyles } from "@/constants/Styles";
+import DatePicker from "react-native-modern-datepicker";
 
 const IMG_HEIGHT = 300;
 const { width } = Dimensions.get("window");
 
 const Page = () => {
+  const today = new Date().toISOString().substring(0, 10);
   const { id } = useLocalSearchParams<{ id: string }>();
   const item = (listingData as AirbnbList[]).find(
     (item) => item.id.toString() === (id ?? "")
@@ -35,6 +38,8 @@ const Page = () => {
   const scrollOffset = useScrollViewOffset(scrollRef);
   const navigation = useNavigation();
   const [imageLoading, setImageLoading] = useState(true);
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [selectedRange, setSelectedRange] = useState("");
   const shareListing = async () => {
     try {
       await Share.share({
@@ -157,7 +162,7 @@ const Page = () => {
           <View style={{ flexDirection: "row", gap: 4 }}>
             <Ionicons name="star" size={16} />
             <Text style={styles.ratings}>
-              {item?.review_scores_rating} . {item?.number_of_reviews} reviews
+              {item?.review_scores_rating} · {item?.number_of_reviews} reviews
             </Text>
           </View>
           <View style={styles.divider} />
@@ -203,11 +208,49 @@ const Page = () => {
           </View>
           <TouchableOpacity
             style={[defaultStyles.btn, { paddingHorizontal: 24, height: 48 }]}
+            onPress={() => setShowDatePicker(true)}
           >
             <Text style={defaultStyles.btnText}>Reserve</Text>
           </TouchableOpacity>
         </View>
       </Animated.View>
+
+      {/* DatePicker Modal */}
+      <Modal
+        visible={showDatePicker}
+        transparent={true}
+        animationType="slide"
+        onRequestClose={() => setShowDatePicker(false)}
+      >
+        <View style={styles.modalContainer}>
+          <Animated.View style={styles.cardBody}>
+            <DatePicker
+              current={today}
+              selected={today}
+              minimumDate={today}
+              // mode="range"
+              // onSelectedChange={(dateRange) => {
+              //   setSelectedRange(dateRange);
+              //   setShowDatePicker(false);
+              //   // Handle the selected date range here
+              //   console.log("Selected date range: ", dateRange);
+              // }}
+              options={{
+                defaultFont: "mon",
+                headerFont: "mon-sb",
+                borderColor: "transparent",
+                mainColor: Colors.primary,
+              }}
+            />
+            <TouchableOpacity
+              onPress={() => setShowDatePicker(false)}
+              style={styles.modalCloseButton}
+            >
+              <Text style={styles.modalCloseButtonText}>Close</Text>
+            </TouchableOpacity>
+          </Animated.View >
+        </View>
+      </Modal>
     </View>
   );
 };
@@ -311,5 +354,35 @@ const styles = StyleSheet.create({
     height: "100%",
     borderBottomColor: Colors.dark,
     borderWidth: StyleSheet.hairlineWidth,
+  },
+  cardBody: {
+    paddingHorizontal: 20,
+  },
+  // Modal styles
+  modalContainer: {
+    flex: 1,
+    justifyContent: "center",
+    backgroundColor: "rgba(0,0,0,0.5)",
+  },
+  modalContent: {
+    backgroundColor: "white",
+    borderRadius: 14,
+    padding: 20,
+    width: '70%',      // Set width to 90% of the screen
+    height: '40%',     // Set height to 70% of the screen
+    shadowOffset: {
+      width: 2,
+      height: 2,
+    },
+  },
+
+  modalCloseButton: {
+    marginTop: 10,
+    alignSelf: "center",
+    padding: 10,
+  },
+  modalCloseButtonText: {
+    fontSize: 16,
+    color: Colors.primary,
   },
 });
