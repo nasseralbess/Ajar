@@ -1,10 +1,11 @@
 # FastAPI-related imports
-from fastapi import FastAPI
+from fastapi import FastAPI, WebSocket
 from fastapi.middleware.cors import CORSMiddleware
 from pymongo import MongoClient
 import os
 from dotenv import load_dotenv
 from enum import Enum
+from messaging import websocket_endpoint, manager
 
 
 '''
@@ -50,10 +51,9 @@ class ObjectType(Enum):
     frmhs = "Farmhouses"
     usr = "Users"
     slr = "Sellers"
-# Loading environment variables 
+
 load_dotenv()
 
-# FastAPI setup
 app = FastAPI()
 
 # Allow CORS
@@ -65,12 +65,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Setup MongoDB connection
 mongo_uri = os.getenv('MONGODB_URI')
 client = MongoClient(mongo_uri)
-db = client.Ajar  # Replace 'Ajar' with your specific database name if needed
-
-# Example route
+db = client.Ajar  
 @app.get("/")
 async def read_root():
     return {"message": "Hello, FastAPI!"}
@@ -200,6 +197,10 @@ async def delete_review(object_type: Enum, object_id: str, review_id: str):
 
 
     
+@app.websocket("/ws/{username}")
+async def websocket_route(websocket: WebSocket, username: str):
+    await websocket_endpoint(websocket, username)
+
 
 # Start the FastAPI app
 # You can run the app with: `uvicorn your_script_name:app --reload`
