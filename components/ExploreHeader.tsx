@@ -10,33 +10,23 @@ import * as Haptics from "expo-haptics";
 
 const categories = [
   {
-    name: "Home/Apt",
-    icon: "home",
+    name: "FarmHouses",
+    icon: "house",
   },
   {
-    name: "Cabins",
-    icon: "house-siding",
+    name: "DJ",
+    icon: "music-note",
+    
   },
   {
-    name: "Trending",
-    icon: "local-fire-department",
+    name: "Catering",
+    icon: "restaurant",
   },
   {
-    name: "Play",
-    icon: "videogame-asset",
+    name: "Party Planning",
+    icon: "celebration",
   },
-  {
-    name: "City",
-    icon: "apartment",
-  },
-  {
-    name: "Beachfront",
-    icon: "beach-access",
-  },
-  {
-    name: "Countryside",
-    icon: "nature-people",
-  },
+  
 ];
 
 interface Props {

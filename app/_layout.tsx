@@ -119,7 +119,7 @@ function RootLayoutNav() {
         name="(modals)/booking"
         options={{
           presentation: "transparentModal",
-          animation: "fade",
+          animation: "fade", 
           headerTransparent: true,
           headerTitle: (props) => <ModalHeaderText />,
           headerLeft: () => (

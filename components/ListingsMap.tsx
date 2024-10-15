@@ -13,10 +13,10 @@ interface Props {
 }
 
 const INITIAL_REGION = {
-  latitude: 41.3851,
-  longitude: 2.1734,
-  latitudeDelta: 0.0922,
-  longitudeDelta: 0.0421,
+  latitude: 32.035354, 
+  longitude: 35.725194,
+  latitudeDelta: 0.05,
+  longitudeDelta: 0.05,
 };
 
 const debouncedRenderMarkers = (
