@@ -69,7 +69,7 @@ const ChatScreen = () => {
         contentContainerStyle={styles.messageList}
       />
       <View style={styles.inputContainer}>
-        <TextInput
+        <TextInput 
           style={styles.input}
           value={inputText}
           onChangeText={setInputText}
@@ -130,8 +130,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderTopWidth: 1,
     borderTopColor: Colors.grey,
+    marginBottom: 20,
   },
   input: {
+   
     flex: 1,
     ...defaultStyles.inputField,
     height: 40,
