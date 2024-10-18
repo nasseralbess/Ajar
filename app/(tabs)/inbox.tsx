@@ -71,7 +71,7 @@ const InboxScreen = () => {
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: 60,
+    paddingTop: 16,
   },
   title: {
     ...defaultStyles.title,
