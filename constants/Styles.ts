@@ -9,6 +9,16 @@ export const defaultStyles = StyleSheet.create({
     backgroundColor: "#F7F9FC",
     paddingHorizontal: 16,
   },
+  header: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    color: Colors.primary,
+    marginBottom: 24,
+    textAlign: 'center',
+    textShadowColor: 'rgba(0, 0, 0, 0.1)',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 2,
+  },
   inputField: {
     height: 58,
     borderWidth: 1,
