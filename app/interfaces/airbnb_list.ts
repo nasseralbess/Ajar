@@ -1,4 +1,5 @@
 export interface AirbnbList {
+  _id : string,
   id: number;
   listing_url: string;
   scrape_id: number;

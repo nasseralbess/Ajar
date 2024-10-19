@@ -41,7 +41,7 @@ const ListingItem: React.FC<ListingItemProps> = ({ item }) => {
       entering={FadeInRight}
       exiting={FadeOutLeft}
     >
-      <Link href={`/listing/${item.id}`} key={item.id + item.host_id} asChild>
+      <Link href={`/listing/${item._id}`} key={item._id + item.host_id} asChild>
         <TouchableOpacity>
           <View style={styles.imageContainer}>
             {imageLoading && (
