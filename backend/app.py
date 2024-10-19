@@ -7,6 +7,9 @@ from dotenv import load_dotenv
 from enum import Enum
 from messaging import websocket_endpoint, manager
 
+# Importing models
+from models.RentModel import RentalItem
+
 
 '''
 Date Structure 
@@ -30,6 +33,7 @@ Sellers
 Information (Same as above) 
 List of id’s of farmhouses being offered 
 Reviews given to the seller (?) (maybe avg of reviews given to farmhouses/utilities being rented) 
+
 FarmHouses/utilities 
 Name 
 Location 
@@ -51,6 +55,9 @@ class ObjectType(Enum):
     frmhs = "Farmhouses"
     usr = "Users"
     slr = "Sellers"
+
+
+
 
 load_dotenv()
 
@@ -132,23 +139,38 @@ async def delete_seller(seller_id: str):
     sellers.delete_one({"_id": seller_id})
     return {"message": "Seller deleted successfully!"}
 
-@app.post("/add_farmhouse/{farmhouse_id}")
-async def add_farmhouse(farmhouse: dict):
+
+
+# We need to define the database structure for farmhouse need
+@app.post("/add_farmhouse")
+async def add_farmhouse(farmhouse: RentalItem):
     farmhouses = db["Farmhouses"]
-    farmhouses.insert_one(farmhouse)
-    return {"message": "Farmhouse added successfully!"}
+    
+    # Convert the Pydantic model to a dictionary
+    farmhouse_dict = farmhouse.dict()
+    
+    # Insert the farmhouse dictionary into the database
+    result = farmhouses.insert_one(farmhouse_dict)
+    
+    return {"message": "Farmhouse added successfully!", "id": str(result.inserted_id)}
 
 @app.get("/get_farmhouses")
 async def get_farmhouses():
     farmhouses = db["Farmhouses"]
-    all_farmhouses = farmhouses.find()
+    
+    # Convert the cursor returned by `find()` to a list
+    all_farmhouses = list(farmhouses.find())
+    
+    # MongoDB ObjectId is not JSON serializable, so convert the ObjectId to a string
+    for farmhouse in all_farmhouses:
+        farmhouse["_id"] = str(farmhouse["_id"])
     return {"farmhouses": all_farmhouses}
 
 @app.get("/get_farmhouse/{farmhouse_id}")
 async def get_farmhouse(farmhouse_id: str):
     farmhouses = db["Farmhouses"]
     farmhouse = farmhouses.find_one({"_id": farmhouse_id})
-    return {"farmhouse": farmhouse}
+    return {farmhouse}
 
 @app.put("/update_farmhouse/{farmhouse_id}")
 async def update_farmhouse(farmhouse_id: str, farmhouse: dict):

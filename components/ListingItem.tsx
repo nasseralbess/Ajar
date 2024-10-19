@@ -13,6 +13,9 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import Animated, { FadeInRight, FadeOutLeft } from "react-native-reanimated";
 import Colors from "@/constants/Colors";
 
+
+// This displays the individual items
+
 interface ListingItemProps {
   item: AirbnbList;
 }

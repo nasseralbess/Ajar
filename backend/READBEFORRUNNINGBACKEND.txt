@@ -6,7 +6,7 @@ pip freeze > requirements.txt
 
 ACTIVATION 
 source env/bin/activate
-
+uvicorn app:app --reload
 then install the requirenments by 
 python3 -m pip install -r requirements.txt
 

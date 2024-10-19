@@ -1,10 +1,4 @@
-import React, {
-  useState,
-  useEffect,
-  useCallback,
-  useMemo,
-  useRef,
-} from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import {
   View,
   Text,
@@ -23,7 +17,7 @@ import ListingItem from "./ListingItem";
 import { AirbnbList } from "@/app/interfaces/airbnb_list";
 import { Ionicons } from "@expo/vector-icons";
 import Colors from "@/constants/Colors";
-import listingData from "@/assets/data/barcelona-listings.json";
+import { fetchData } from "../utils/fetchData";
 
 interface Props {
   category: string;
@@ -33,40 +27,49 @@ const ListingsBottomSheet = ({ category }: Props) => {
   const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState<AirbnbList[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const snapPoints = useMemo(() => ["8%", "100%"], []);
+  const [hasMoreData, setHasMoreData] = useState(true);
+  const snapPoints = ["8%", "100%"];
   const bottomSheetRef = useRef<BottomSheet>(null);
   const bottomSheetListRef = useRef<BottomSheetFlatListMethods>(null);
   const [showScrollToTopButton, setShowScrollToTopButton] = useState(false);
 
-  const items = useMemo(() => {
-    return (listingData as AirbnbList[]).filter(
-      (item) => item.property_type === category
-    );
-  }, [category]);
-
+  // Fetch items when category changes or on initial load
   useEffect(() => {
     loadInitialItems();
     scrollToTop(false);
     bottomSheetRef.current?.expand();
   }, [category]);
 
-  const loadInitialItems = useCallback(() => {
+  const loadInitialItems = useCallback(async () => {
     setIsLoading(true);
-    const initialData = items.slice(0, 20);
-    setData(initialData);
+    const response = await fetchData(
+      `http://127.0.0.1:8000/get_farmhouses?category=${category}&page=1&limit=20`,
+      "GET"
+    );
+    if (response && response.farmhouses) {
+      setData(response.farmhouses);
+      setCurrentPage(1); // Reset to page 1
+      setHasMoreData(response.farmhouses.length === 20); // Check if there's more data
+    }
     setIsLoading(false);
-  }, [items]);
+  }, [category]);
 
-  const loadMoreData = useCallback(() => {
-    if (isLoading) return;
+  const loadMoreData = useCallback(async () => {
+    if (isLoading || !hasMoreData) return; // Avoid unnecessary requests
+
     setIsLoading(true);
-    const startIndex = currentPage * 20;
-    const endIndex = startIndex + 20;
-    const moreData = items.slice(startIndex, endIndex);
-    setData((prevData) => [...prevData, ...moreData]);
-    setCurrentPage((prevPage) => prevPage + 1);
+    const nextPage = currentPage + 1;
+    const response = await fetchData(
+      `http://127.0.0.1:8000/get_farmhouses?category=${category}&page=${nextPage}&limit=20`,
+      "GET"
+    );
+    if (response && response.farmhouses) {
+      setData((prevData) => [...prevData, ...response.farmhouses]);
+      setCurrentPage(nextPage);
+      setHasMoreData(response.farmhouses.length === 20); // If less than 20, no more data
+    }
     setIsLoading(false);
-  }, [isLoading, currentPage, items]);
+  }, [isLoading, currentPage, hasMoreData, category]);
 
   const RenderRow: ListRenderItem<AirbnbList> = ({ item }) => {
     return <ListingItem item={item} />;
@@ -112,7 +115,7 @@ const ListingsBottomSheet = ({ category }: Props) => {
             color: "#333",
           }}
         >
-          {items?.length} Homes
+          {data?.length} Homes
         </Text>
       </View>
       <View style={[defaultStyles.container, { paddingHorizontal: 16 }]}>
@@ -124,7 +127,7 @@ const ListingsBottomSheet = ({ category }: Props) => {
           windowSize={6}
           initialNumToRender={15}
           maxToRenderPerBatch={20}
-          onEndReached={loadMoreData}
+          onEndReached={loadMoreData} // Fetch more data if available
           onEndReachedThreshold={0.5}
           onScrollEndDrag={handleScroll}
         />
