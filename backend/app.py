@@ -1,10 +1,11 @@
 # FastAPI-related imports
-from fastapi import FastAPI, WebSocket
+from fastapi import FastAPI, WebSocket, HTTPException 
 from fastapi.middleware.cors import CORSMiddleware
 from pymongo import MongoClient
 import os
 from dotenv import load_dotenv
 from enum import Enum
+from bson.objectid import ObjectId
 from messaging import websocket_endpoint, manager
 
 # Importing models
@@ -169,8 +170,16 @@ async def get_farmhouses():
 @app.get("/get_farmhouse/{farmhouse_id}")
 async def get_farmhouse(farmhouse_id: str):
     farmhouses = db["Farmhouses"]
-    farmhouse = farmhouses.find_one({"_id": farmhouse_id})
-    return {farmhouse}
+    try:
+        farmhouse = farmhouses.find_one({"_id": ObjectId(farmhouse_id)})
+        if farmhouse is None:
+            raise HTTPException(status_code=404, detail="Farmhouse not found")
+        # Convert the farmhouse data to JSON, making the ObjectId a string
+        farmhouse['_id'] = str(farmhouse['_id'])
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    return (farmhouse)
+   
 
 @app.put("/update_farmhouse/{farmhouse_id}")
 async def update_farmhouse(farmhouse_id: str, farmhouse: dict):

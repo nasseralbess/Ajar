@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useLayoutEffect } from 'react';
 import {
   View,
   Text,
@@ -7,6 +7,7 @@ import {
   Image,
   ActivityIndicator,
   Share,
+  TouchableOpacity
 } from 'react-native';
 import Animated, { interpolate, useAnimatedStyle, useSharedValue, useAnimatedScrollHandler } from 'react-native-reanimated';
 import { useLocalSearchParams, useNavigation } from 'expo-router';
@@ -44,6 +45,7 @@ const Page = () => {
         console.log(id)
         const response = await fetchData(`http://127.0.0.1:8000/get_farmhouse/${id}`, 'GET');
         if (response) {
+          console.log(response)
           setItem(response);  // Set the item fetched from the backend
         }
       } catch (err) {
@@ -56,7 +58,35 @@ const Page = () => {
     if (id) {
       fetchItem();  // Fetch only if id exists
     }
+    
   }, [id]);
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerBackground: () => (
+        <Animated.View style={[headerAnimatedStyle, styles.header]} />
+      ),
+      headerRight: () => (
+        <View style={styles.bar}>
+          <TouchableOpacity style={styles.roundBtn} onPress={shareListing}>
+            <Ionicons name="share-outline" size={22} color={"#000"} />
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.roundBtn}>
+            <Ionicons name="heart-outline" size={22} color={"#000"} />
+          </TouchableOpacity>
+        </View>
+      ),
+      headerLeft: () => (
+        <TouchableOpacity style={styles.roundBtn} onPress={navigation.goBack}>
+          <Ionicons name="chevron-back" size={24} color={"#000"} />
+        </TouchableOpacity>
+      ),
+    });
+  }, [navigation, shareListing, headerAnimatedStyle]);
+  
+
+
+
+
 
   const shareListing = async () => {
     if (!item) return;
@@ -155,6 +185,30 @@ const Page = () => {
 export default Page;
 
 const styles = StyleSheet.create({
+  bar: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    gap: 10,
+  },
+  roundBtn: {
+    justifyContent: "center",
+    alignItems: "center",
+    width: 38,
+    height: 38,
+    marginBottom: 6,
+    borderRadius: 50,
+    backgroundColor: "white",
+    color: Colors.primary,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: Colors.grey,
+  },
+  header: {
+    backgroundColor: "#fff",
+    height: "100%",
+    borderBottomColor: Colors.dark,
+    borderWidth: StyleSheet.hairlineWidth,
+  },
   container: {
     flex: 1,
     backgroundColor: 'white',
@@ -223,3 +277,4 @@ const styles = StyleSheet.create({
     fontFamily: 'mon-sb',
   },
 });
+
