@@ -9,18 +9,21 @@ import {
   Share,
   TouchableOpacity
 } from 'react-native';
-import Animated, { interpolate, useAnimatedStyle, useSharedValue, useAnimatedScrollHandler } from 'react-native-reanimated';
+import Animated, { interpolate, useAnimatedStyle, useSharedValue, useAnimatedScrollHandler, SlideInDown } from 'react-native-reanimated';
 import { useLocalSearchParams, useNavigation } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import Colors from '@/constants/Colors';
 import { defaultStyles } from '@/constants/Styles';
 import { AirbnbList } from '@/app/interfaces/airbnb_list';
 import { fetchData } from '../../utils/fetchData';  // Assuming fetchData handles API requests
+import { DatePickerModal } from 'react-native-paper-dates';
+import { Provider as PaperProvider, DefaultTheme} from 'react-native-paper';
 
 const IMG_HEIGHT = 300;
 const { width } = Dimensions.get('window');
 
 const Page = () => {
+  const today = new Date().toISOString().substring(0, 10);
   const { id } = useLocalSearchParams<{ id: string }>();  // Get the ID from params
   const navigation = useNavigation();
   const [item, setItem] = useState<AirbnbList | null>(null);  // Store the fetched item
@@ -35,6 +38,11 @@ const Page = () => {
     onScroll: (event) => {
       scrollY.value = event.contentOffset.y;
     },
+  });
+  const [visible, setVisible] = useState(false);
+  const [range, setRange] = useState<{ startDate: Date | undefined; endDate: Date | undefined }>({
+    startDate: undefined,
+    endDate: undefined,
   });
 
   // Fetch the item from the backend when the component starts to load
@@ -99,6 +107,16 @@ const Page = () => {
       console.log('Share Error: ', err);
     }
   };
+  const onDismiss = () => {
+    setVisible(false);
+  };
+  const onConfirm = ({ startDate, endDate }: { startDate: Date; endDate: Date }) => {
+    setVisible(false);
+    setRange({ startDate, endDate });
+    // Handle the selected date range here
+    console.log('Selected date range:', startDate, endDate);
+    // You can navigate to a booking confirmation screen or update the UI accordingly
+  };
 
   // Animated style for the image
   const imageAnimatedStyle = useAnimatedStyle(() => {
@@ -138,6 +156,7 @@ const Page = () => {
   }
 
   return (
+  <PaperProvider theme={theme} >
     <View style={styles.container}>
       <Animated.ScrollView
         onScroll={scrollHandler}  // Using the scroll handler
@@ -177,12 +196,66 @@ const Page = () => {
             </Text>
           </View>
         </View>
+
+        <Animated.View style={defaultStyles.footer} entering={SlideInDown.delay(300)}>
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              paddingVertical: 10,
+              paddingHorizontal: 8,
+            }}
+          >
+            <View style={styles.footerText}>
+              <Text style={styles.footerPrice}>{item?.price ? item.price : 'Price: N/A'}</Text>
+              {item?.price && <Text style={{ fontSize: 16 }}>night</Text>}
+            </View>
+            <TouchableOpacity
+              style={[defaultStyles.btn, { paddingHorizontal: 24, height: 48 }]}
+              onPress={() => setVisible(true)}
+            >
+              <Text style={defaultStyles.btnText}>Reserve</Text>
+            </TouchableOpacity>
+          </View>
+        </Animated.View>
+        
+
+        
+  
       </Animated.ScrollView>
     </View>
+    <DatePickerModal
+          locale="en"
+          mode="range"
+          rangeColors = {Colors.primary}
+          color = {Colors.primary}
+          visible={visible}
+          onDismiss={onDismiss}
+          startDate={range.startDate}
+          endDate={range.endDate}
+          onConfirm={onConfirm}
+          validRange={{
+            startDate: new Date(), // Optional, sets the minimum selectable date
+          }}
+          animationType="slide" // Optional, can be 'slide' or 'fade'
+         
+        />
+        
+  </PaperProvider>
   );
 };
 
 export default Page;
+
+const theme = {
+  ...DefaultTheme,
+  colors: {
+    ...DefaultTheme.colors, // This ensures the other necessary colors are retained
+    primary: Colors.primary, // Override only the primary color
+    // You can override other colors if needed
+  },
+};
 
 const styles = StyleSheet.create({
   bar: {
@@ -274,6 +347,17 @@ const styles = StyleSheet.create({
   },
   ratings: {
     fontSize: 16,
+    fontFamily: 'mon-sb',
+  },
+  footerText: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 4,
+    height: '100%',
+  },
+  footerPrice: {
+    fontSize: 18,
     fontFamily: 'mon-sb',
   },
 });
