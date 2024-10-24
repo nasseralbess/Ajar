@@ -24,7 +24,7 @@ web-build/
 env
 /backend/env/
 /backend/.env
-/backend/_pycache_/
+/backend/__pycache__/
 
 # debug
 npm-debug.*

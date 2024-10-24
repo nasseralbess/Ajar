@@ -349,6 +349,30 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: 'mon-sb',
   },
+  divider: {
+    height: StyleSheet.hairlineWidth,
+    backgroundColor: Colors.grey,
+    marginVertical: 16,
+  },
+  hostView: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  hostImage: {
+    width: 50,
+    height: 50,
+    borderRadius: 50,
+    backgroundColor: Colors.grey,
+  },
+  hostName: {
+    fontWeight: '500',
+    fontSize: 16,
+  },
+  hostSince: {
+    fontSize: 14,
+    color: Colors.grey,
+  },
   footerText: {
     flexDirection: 'row',
     justifyContent: 'center',
