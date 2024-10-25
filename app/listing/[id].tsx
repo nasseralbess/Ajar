@@ -161,7 +161,7 @@ const Page = () => {
       <Animated.ScrollView
         onScroll={scrollHandler}  // Using the scroll handler
         scrollEventThrottle={16}  // Smooth scrolling
-        contentContainerStyle={{ paddingBottom: 100 }}
+        contentContainerStyle={{ paddingBottom: 40 }}
       >
         <View style={styles.imageContainer}>
           {imageLoading && (
@@ -182,6 +182,7 @@ const Page = () => {
           <Text style={styles.location}>
             {item?.room_type} in {item?.host_location}
           </Text>
+          {/* Room Information */}
           <View style={styles.rooms}>
             <Text style={styles.roomsText}>{item?.bedrooms} bedrooms</Text>
             <Text style={styles.dividerText}>|</Text>
@@ -195,36 +196,62 @@ const Page = () => {
               {item?.review_scores_rating} . {item?.number_of_reviews} reviews
             </Text>
           </View>
+
+          <View style={styles.divider} />
+
+          <View style={styles.hostView}>
+            <Image
+              source={{ uri: item?.host_thumbnail_url }}
+              style={styles.host}
+            />
+
+            <View>
+              <Text style={{ fontWeight: "500", fontSize: 16 }}>
+                Hosted by {item?.host_name}
+              </Text>
+              <Text>Host since {item?.host_since}</Text>
+            </View>
+          </View>
+
+          <View style={styles.divider} />
+
+          <Text style={styles.description}>{item?.description}</Text>
         </View>
 
-        <Animated.View style={defaultStyles.footer} entering={SlideInDown.delay(300)}>
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              paddingVertical: 10,
-              paddingHorizontal: 8,
-            }}
-          >
-            <View style={styles.footerText}>
-              <Text style={styles.footerPrice}>{item?.price ? item.price : 'Price: N/A'}</Text>
-              {item?.price && <Text style={{ fontSize: 16 }}>night</Text>}
-            </View>
-            <TouchableOpacity
-              style={[defaultStyles.btn, { paddingHorizontal: 24, height: 48 }]}
-              onPress={() => setVisible(true)}
-            >
-              <Text style={defaultStyles.btnText}>Reserve</Text>
-            </TouchableOpacity>
-          </View>
-        </Animated.View>
-        
 
+
+       
         
-  
       </Animated.ScrollView>
+      <Animated.View style={defaultStyles.footer} entering={SlideInDown.delay(300)}>
+       
+       <View
+         style={{
+           flexDirection: 'row',
+           justifyContent: 'space-between',
+           alignItems: 'center',
+           paddingVertical: 10,
+           paddingHorizontal: 8,
+         }}
+       >
+         <View style={styles.footerText}>
+           <Text style={styles.footerPrice}>{item?.price ? item.price : 'Price: N/A'}</Text>
+           {item?.price && <Text style={{ fontSize: 16 }}>night</Text>}
+         </View>
+         <TouchableOpacity
+           style={[defaultStyles.btn, { paddingHorizontal: 24, height: 48 }]}
+           onPress={() => setVisible(true)}
+         >
+           <Text style={defaultStyles.btnText}>Reserve</Text>
+         </TouchableOpacity>
+       </View>
+      
+     </Animated.View>
     </View>
+
+
+
+    {/* Datepicking  */}
     <DatePickerModal
           locale="en"
           mode="range"
@@ -354,6 +381,20 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.grey,
     marginVertical: 16,
   },
+  description: {
+    fontSize: 16,
+    marginTop: 10,
+    fontFamily: "mon",
+  },
+  host: {
+    width: 50,
+    height: 50,
+    borderRadius: 50,
+    backgroundColor: Colors.grey,
+  },
+
+
+
   hostView: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -373,6 +414,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: Colors.grey,
   },
+  
   footerText: {
     flexDirection: 'row',
     justifyContent: 'center',

@@ -3,8 +3,7 @@ from typing import Optional, List
 
 class RentalItem(BaseModel):
     id: int
-    # host id refers to another host object
-    host_id: int
+    host_id: int  # Refers to the Host model
     property_type: str
     name: Optional[str] = Field(default="Unknown Property", description="Name of the property")
     price: Optional[str] = Field(default="Price not available", description="Price of the rental")
@@ -16,8 +15,9 @@ class RentalItem(BaseModel):
     beds: Optional[int] = Field(default=1, description="Number of beds")
     bathrooms: Optional[int] = Field(default=1, description="Number of bathrooms")
     number_of_reviews: Optional[int] = Field(default=0, description="Number of reviews")
-    host_location: Optional[str] = Field(default="Location not available", description="Location of the host")
+    host_location: Optional[str] = Field(default="Location not available", description="Location of the property")
     listing_url: Optional[str] = Field(default="https://example.com/listing", description="URL to the listing")
+    description: Optional[str] = Field(default="Description not available", description="Detailed description of the property")
 
     class Config:
         orm_mode = True
