@@ -26,10 +26,15 @@ class ConnectionManager:
         for connection in self.active_connections:
             await connection.send_text(message)
 
-manager = ConnectionManager()
+manager1 = ConnectionManager()
+manager2 = ConnectionManager()
 
 # WebSocket endpoint
-async def websocket_endpoint(websocket: WebSocket, username: str):
+async def websocket_endpoint(websocket: WebSocket, username: str, mgr:int):
+    if mgr == 1:
+        manager = manager1
+    else:
+        manager = manager2
     await manager.connect(websocket)
     try:
         while True:

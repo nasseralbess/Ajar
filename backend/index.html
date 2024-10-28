@@ -13,8 +13,9 @@
 
     <script>
         const userId = prompt("Enter your user ID (e.g., user1, user2):"); // Prompt the user for their user ID
+        const mgrid = prompt("Enter your manager ID (e.g., manager1, manager2):"); // Prompt the user for their user ID
 
-        const ws = new WebSocket(`ws://localhost:8000/ws/${userId}`);
+        const ws = new WebSocket(`ws://localhost:8000/ws/${userId}/${mgrid}`); // Connect to the WebSocket server
 
         ws.onmessage = function (event) {
             const outputDiv = document.getElementById("output");

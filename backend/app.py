@@ -6,7 +6,7 @@ import os
 from dotenv import load_dotenv
 from enum import Enum
 from bson.objectid import ObjectId
-from messaging import websocket_endpoint, manager
+from messaging import websocket_endpoint
 
 # Importing models
 from models.RentModel import RentalItem
@@ -228,9 +228,9 @@ async def delete_review(object_type: Enum, object_id: str, review_id: str):
 
 
     
-@app.websocket("/ws/{username}")
-async def websocket_route(websocket: WebSocket, username: str):
-    await websocket_endpoint(websocket, username)
+@app.websocket("/ws/{username}/{mgr}")
+async def websocket_route(websocket: WebSocket, username: str, mgr: int):
+    await websocket_endpoint(websocket, username, mgr)
 
 
 # Start the FastAPI app
