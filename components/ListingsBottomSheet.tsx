@@ -54,6 +54,7 @@ const ListingsBottomSheet = ({ category }: Props) => {
     setIsLoading(false);
   }, [category]);
 
+  // When you a reloading or scroll all the way to the bottom
   const loadMoreData = useCallback(async () => {
     if (isLoading || !hasMoreData) return; // Avoid unnecessary requests
 

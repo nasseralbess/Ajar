@@ -179,7 +179,49 @@ async def get_farmhouse(farmhouse_id: str):
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
     return (farmhouse)
-   
+
+# Adding to favorites 
+@app.put("/update_favorite/{rental_id}")
+async def update_favorite(rental_id: str):
+    rentals = db["Farmhouses"]
+    try:
+        
+        print(ObjectId(rental_id))
+        rental = rentals.find_one({"_id": ObjectId(rental_id)})
+        
+        if rental is None:
+            raise HTTPException(status_code=404, detail="Rental item not found")
+        
+        # Update the favorites field to True
+        rentals.update_one({"_id": ObjectId(rental_id)}, {"$set": {"favorites": True}})
+        
+        # Fetch the updated item
+        updated_rental = rentals.find_one({"_id": ObjectId(rental_id)})
+        updated_rental['_id'] = str(updated_rental['_id'])  # Convert ObjectId to string for JSON compatibility
+
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+    return updated_rental
+
+# Retrieve all the favorites
+@app.get("/favorites")
+async def get_all_favorites():
+    rentals = db["Farmhouses"]
+    try:
+        # Retrieve all items where favorites is True
+        favorite_rentals = rentals.find({"favorites": True})
+        
+        # Convert ObjectId to string and prepare the result list
+        result = [
+            {**rental, "_id": str(rental["_id"])} 
+            for rental in favorite_rentals
+        ]
+        
+        return result
+
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
 
 @app.put("/update_farmhouse/{farmhouse_id}")
 async def update_farmhouse(farmhouse_id: str, farmhouse: dict):

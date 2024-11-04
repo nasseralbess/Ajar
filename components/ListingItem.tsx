@@ -12,7 +12,7 @@ import { AirbnbList } from "@/app/interfaces/airbnb_list";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import Animated, { FadeInRight, FadeOutLeft } from "react-native-reanimated";
 import Colors from "@/constants/Colors";
-
+import { fetchData } from '../utils/fetchData'; 
 
 // This displays the individual items
 
@@ -28,12 +28,18 @@ const ListingItem: React.FC<ListingItemProps> = ({ item }) => {
     // Add or remove item from favorites based on the value of 'liked'
     if (liked) {
       // Add item to favorites
+      console.log("added to favorites")
+      toLike()
     }
   }, [liked]);
 
   const handleLike = () => {
     setLiked(!liked);
   };
+
+  const toLike =async () => {
+    await fetchData(`http://127.0.0.1:8000/update_favorite/${item._id}`, 'PUT');
+  }
 
   return (
     <Animated.View

@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, Image, TouchableOpacity, FlatList, StyleSheet } from 'react-native';
 import Colors from "@/constants/Colors";
 import { defaultStyles } from "@/constants/Styles";
-
+import { fetchData } from "../../utils/fetchData";
 interface WishlistItem {
   id: string;
   title: string;
@@ -15,41 +15,74 @@ interface WishlistItem {
 
 const WishlistCartPage: React.FC = () => {
   const [expandedCategory, setExpandedCategory] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
   const [wishlistItems, setWishlistItems] = useState<WishlistItem[]>([
     // Sample data, replace with your actual data
-    {
-      id: '1',
-      title: 'Rustic Barn Retreat',
-      image: 'https://a0.muscache.com/pictures/4378248/3e40ff9d_original.jpg',
-      price: 150,
-      rating: 4.7,
-      isAvailable: true,
-      category: 'FarmHouses',
-    },
-    {
-      id: '2',
-      title: 'Gourmet Farm-to-Table Dinner',
-      image: 'https://a0.muscache.com/pictures/miso/Hosting-1391124/original/bf2541b8-74d7-4667-9f09-b031921a9143.png',
-      price: 80,
-      rating: 4.9,
-      isAvailable: true,
-      category: 'Catering',
-    },
-    {
-      id: '3',
-      title: 'Horseback Riding Experience',
-      image: 'https://a0.muscache.com/pictures/airflow/Hosting-1395698/original/bc359ed6-7d77-4b67-8c33-9fe0c541f86d.jpg',
-      price: 60,
-      rating: 4.5,
-      isAvailable: true,
-      category: 'Others',
-    },
+    // {
+    //   id: '1',
+    //   title: 'Rustic Barn Retreat',
+    //   image: 'https://a0.muscache.com/pictures/4378248/3e40ff9d_original.jpg',
+    //   price: 150,
+    //   rating: 4.7,
+    //   isAvailable: true,
+    //   category: 'FarmHouses',
+    // },
+    // {
+    //   id: '2',
+    //   title: 'Gourmet Farm-to-Table Dinner',
+    //   image: 'https://a0.muscache.com/pictures/miso/Hosting-1391124/original/bf2541b8-74d7-4667-9f09-b031921a9143.png',
+    //   price: 80,
+    //   rating: 4.9,
+    //   isAvailable: true,
+    //   category: 'Catering',
+    // },
+    // {
+    //   id: '3',
+    //   title: 'Horseback Riding Experience',
+    //   image: 'https://a0.muscache.com/pictures/airflow/Hosting-1395698/original/bc359ed6-7d77-4b67-8c33-9fe0c541f86d.jpg',
+    //   price: 60,
+    //   rating: 4.5,
+    //   isAvailable: true,
+    //   category: 'Others',
+    // },
     // Add more items...
   ]);
+  useEffect(() => {
+    const fetchWishlistItems = async () => {
+      setLoading(true);
+      try {
+        const response = await fetchData("http://127.0.0.1:8000/favorites", 'GET');
+        if (Array.isArray(response)) {
+          const mappedItems = response.map((item) => ({
+            id: item._id, // Ensure you’re mapping MongoDB ObjectId correctly
+            title: item.name || "Unknown Property",
+            image: item.picture_url || "https://example.com/default_image.jpg",
+            price: item.price || 0,
+            rating: item.review_scores_value || 0,
+            isAvailable: item.isAvailable || true,
+            category: item.property_type || "Others",
+          }));
+          setWishlistItems(mappedItems);
+        } else {
+          console.error("Unexpected response format:", response);
+        }
+      } catch (error) {
+        console.error("Failed to fetch wishlist items:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+  
+    fetchWishlistItems();
+  }, []);
+  
 
-  const categories = ['FarmHouses', 'Catering', 'Others'];
+  
+
+  const categories = ['FarmHouses', 'Catering', 'Others', 'Apartment'];
 
   const toggleCategory = (category: string) => {
+    console.log(wishlistItems)
     setExpandedCategory(expandedCategory === category ? null : category);
   };
 
