@@ -270,10 +270,9 @@ async def delete_review(object_type: Enum, object_id: str, review_id: str):
 
 
     
-@app.websocket("/ws/{username}/{mgr}")
-async def websocket_route(websocket: WebSocket, username: str, mgr: int):
+@app.websocket("/ws/{username}/{mgr}") 
+async def websocket_route(websocket: WebSocket, username: str, mgr: int): 
     await websocket_endpoint(websocket, username, mgr)
-
 
 # Start the FastAPI app
 # You can run the app with: `uvicorn your_script_name:app --reload`

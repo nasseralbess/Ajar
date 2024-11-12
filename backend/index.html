@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>WebSocket Example</title>
+    <title>BREAD</title>
 </head>
 <body>
-    <h1>WebSocket Example</h1>
+    <h1>BREAD</h1>
     <div>
         <input type="text" id="messageInput" placeholder="Type a message">
         <button onclick="sendMessage()">Send</button>
@@ -13,13 +13,18 @@
 
     <script>
         const userId = prompt("Enter your user ID (e.g., user1, user2):"); // Prompt the user for their user ID
-        const mgrid = prompt("Enter your manager ID (e.g., manager1, manager2):"); // Prompt the user for their user ID
+        const mgrid = prompt("Enter your manager ID (e.g., 1, 2, etc.):"); // Prompt the user for their manager ID
 
         const ws = new WebSocket(`ws://localhost:8000/ws/${userId}/${mgrid}`); // Connect to the WebSocket server
 
         ws.onmessage = function (event) {
             const outputDiv = document.getElementById("output");
             outputDiv.innerHTML += `<p>${event.data}</p>`;
+        };
+
+        ws.onopen = function () {
+            // Request previous messages when the WebSocket connection opens
+            ws.send("history_request");
         };
 
         function sendMessage() {
